@@ -4,53 +4,46 @@ import re
 client = TwilioRestClient()
 
 def cleanNum(dirtyNum):
-    ''' cleans up phone number formatting '''
-    clean = re.sub('[ )(-]','', dirtyNum)
-    clean = "+1" + clean
-    return clean
+    ''' formats a phone number '''
+    return "+1" + re.sub('[ )(-]','',dirtyNum).strip("\n")
 
 def cleanList(dirtyList):
-    c = []
+    ''' formats a list of phone numbers '''
+    return [cleanNum(d) for d in dirtyList]
 
-    for d in dirtyList:
-        c.append(cleanNum(d))
-    return c
+def readIn(numFile):
+    ''' Parse a text file of phone numbers into a list, 
+        and clean up the formatting of the list before returning '''
+    f = open(numFile, 'r')
+    lines = f.readlines()
+    return cleanList(lines) 
 
 def sms(toNum, textBody):
-    ''' sends a given text to a given phone number '''
+    ''' Send a message to a phone number '''
     client.sms.messages.create(to=toNum, from_="+13602052266", body=textBody)
     print "sent the message: (" + textBody + ") to " + toNum
 
 def textBomb(numbers, textBody):
-    i=0
+    ''' Send a message to a list of phone numbers '''
     for num in numbers:
         sms(num, textBody)
-        i+=1
-    print "sent " + str(i) + " texts"
 
-
-def readIn(numFile):
-    f = open(numFile, 'r')
-    lines = []
-    for l in f:
-        lines.append(l)
-    cleanedInput = cleanList(lines) 
-    return cleanedInput
-
-def sendOne():
-    rawNum = raw_input("Enter a phone number: ")
-    text = raw_input("Enter a text message to send: " )
-    go = raw_input("Send? (type yes or no) " )
+# def sendOne():
+#     ''' Send 1 message to 1 phone number from commandline '''
+#     rawNum = raw_input("Enter a phone number: ")
+#     text = raw_input("Enter a text message to send: " )
+#     go = raw_input("Send? (type yes or no) " )
     
-    toNum = cleanNum(rawNum) 
+#     toNum = cleanNum(rawNum) 
 
-    if (go == "yes"):
-        print "ok, sending..............."
-        sms(toNum, text)
-    else:
-        print "ok, not sent"
-
-def sendBomb():
+#     if (go == "yes"):
+#         print "ok, sending..............."
+#         sms(toNum, text)
+#     else:
+#         print "ok, not sent"
+  
+def bombsAway():
+    ''' Call textbomb from commandline '''
     numFile = raw_input("Enter a file name: " )
     text = raw_input("Enter a text message to send: " )
     go = raw_input("Send? (type yes or no) " )
@@ -64,7 +57,7 @@ def sendBomb():
         print "ok, not sent"
 
 def main():
-   sendOne()
+    bombsAway()
 
 if __name__ == "__main__":
     main()
