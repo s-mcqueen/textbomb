@@ -44,7 +44,8 @@ def textBomb(numbers, textBody):
   
 def bombsAway():
     ''' Call textbomb from commandline '''
-    numFile = raw_input("Enter a file name: ")
+    # numFile = raw_input("Enter a file name: ")
+    numFile = "numbers.txt" # for ease of use right now...
     text = raw_input("Enter a text message to send: ")
     go = raw_input("Send? (type yes or no) ")
 
